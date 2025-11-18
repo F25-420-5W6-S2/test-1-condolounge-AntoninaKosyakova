@@ -19,6 +19,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using SQLitePCL;
+using CondoLounge.Data;
 
 namespace CondoLounge.Areas.Identity.Pages.Account
 {
@@ -30,6 +32,7 @@ namespace CondoLounge.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly ApplicationDbContext _context;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
@@ -44,6 +47,8 @@ namespace CondoLounge.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            //_context = context;
+            
         }
 
         /// <summary>
@@ -80,6 +85,12 @@ namespace CondoLounge.Areas.Identity.Pages.Account
             [Display(Name = "Email")]
             public string Email { get; set; }
 
+            [Required]
+            public string BuildingId { get; set; }
+
+            [Required]
+            public string CondoNumber { get; set; }
+
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
@@ -111,6 +122,34 @@ namespace CondoLounge.Areas.Identity.Pages.Account
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            //returnUrl ?? = Url.Content("~/");
+
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+
+            var user1 = new ApplicationUser
+            {
+                UserName = Input.Email,
+                Email = Input.Email
+            };
+
+            await _emailStore.SetEmailAsync(user1, Input.Email, CancellationToken.None);
+
+            var createUserResult= await _userManager.CreateAsync(user1, Input.Password);
+
+            if(!createUserResult.Succeeded)
+            {
+                foreach (var err in createUserResult.Errors)
+
+                    ModelState.AddModelError("", err.Description);
+                return Page();
+            }
+
+            //var building = await _context.Buildings.
+
+
             if (ModelState.IsValid)
             {
                 var user = CreateUser();

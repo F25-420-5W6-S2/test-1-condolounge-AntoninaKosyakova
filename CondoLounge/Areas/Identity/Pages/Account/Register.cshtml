@@ -18,6 +18,35 @@
                 <label asp-for="Input.Email">Email</label>
                 <span asp-validation-for="Input.Email" class="text-danger"></span>
             </div>
+
+            <!--Building -->
+            <div class="form-floating mb-3">
+                <input asp-for="Input.BuildingId"
+                       class="form-control"
+                       placeholder="1"
+                       aria-required="true"
+                       value="1" />
+                <label asp-for="Input.BuildingId">BuildingId</label>
+                <span asp-validation-for="Input.BuildingId"
+                      class="text-danger"></span>
+            </div>
+
+
+            <!--Condo number -->
+            <div class="form-floating mb-3">
+                <input asp-for="Input.CondoNumber"
+                       class="form-control"
+                       placeholder="101"
+                       aria-required="true"
+                       value="1" />
+                <label asp-for="Input.CondoNumber">Condo Number</label>
+                <span asp-validation-for="Input.CondoNumber"
+                      class="text-danger"></span>
+            </div>
+
+            
+
+
             <div class="form-floating mb-3">
                 <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
                 <label asp-for="Input.Password">Password</label>
