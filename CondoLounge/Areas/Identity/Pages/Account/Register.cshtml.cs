@@ -21,6 +21,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using SQLitePCL;
 using CondoLounge.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace CondoLounge.Areas.Identity.Pages.Account
 {
@@ -39,7 +40,8 @@ namespace CondoLounge.Areas.Identity.Pages.Account
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            ApplicationDbContext context)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -47,7 +49,7 @@ namespace CondoLounge.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
-            //_context = context;
+            _context = context;
             
         }
 
@@ -122,7 +124,7 @@ namespace CondoLounge.Areas.Identity.Pages.Account
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-            //returnUrl ?? = Url.Content("~/");
+            returnUrl ?? = Url.Content("~/");
 
             if (!ModelState.IsValid)
             {
@@ -147,7 +149,13 @@ namespace CondoLounge.Areas.Identity.Pages.Account
                 return Page();
             }
 
-            //var building = await _context.Buildings.
+            var building = await _context.Buildings.FirstOrDefaultAsync(b => b.BuildingId == Input.BuildingId);
+
+            _context.Buildings.Add(building);
+            await _context.SaveChangesAsync();
+
+            //create condo
+            
 
 
             if (ModelState.IsValid)
