@@ -49,27 +49,71 @@ namespace CondoLounge.Seed
                 await ctx.SaveChangesAsync();
             }
 
-            //
-            // --- Create Admin User with sample Condos ---
-            //
-            var admin = new ApplicationUser
+
+            var adminEmail = "admin@example.com";
+            var admin = await userManager.FindByEmailAsync(adminEmail);
+
+            if(admin == null)
             {
-                UserName = "admin@example.com",
-                Email = "admin@example.com",              
-                Condos = new List<Condo>
+                admin = new ApplicationUser
+                {
+                    UserName = adminEmail,
+                    Email = adminEmail
+                };
+
+                await userManager.CreateAsync(admin, "Password123!");
+                await userManager.AddToRoleAsync(admin, "Admin");
+
+                var condos = new List<Condo>
                 {
                     new Condo { CondoNumber = "101", Address = "123 avenue, Lachine, QC, CA", BuildingId = BuildingId },
                     new Condo { CondoNumber = "102", Address = "123 avenue, Lachine, QC, CA", BuildingId = BuildingId }
-                }
-            };
+                };
 
-            if (await userManager.FindByEmailAsync(admin.Email) == null)
-            {
-                await userManager.CreateAsync(admin, "Password123!");
-                await userManager.AddToRoleAsync(admin, "Admin");
+                ctx.Condos.AddRange(condos);
+                await ctx.SaveChangesAsync();
+
+                admin.Condos = condos;
+
+                await userManager.UpdateAsync(admin);
+
+                
             }
 
             Console.WriteLine("Database seeding completed successfully.");
+
+
+            ////
+            //// --- Seed initial Building ---
+            ////
+            //var BuildingId = "1";
+            //if (!ctx.Buildings.Any(g => g.BuildingId == BuildingId))
+            //{
+            //    ctx.Buildings.Add(new Building { BuildingId = BuildingId });
+            //    await ctx.SaveChangesAsync();
+            //}
+
+            ////
+            //// --- Create Admin User with sample Condos ---
+            ////
+            //var admin = new ApplicationUser
+            //{
+            //    UserName = "admin@example.com",
+            //    Email = "admin@example.com",              
+            //    Condos = new List<Condo>
+            //    {
+            //        new Condo { CondoNumber = "101", Address = "123 avenue, Lachine, QC, CA", BuildingId = BuildingId },
+            //        new Condo { CondoNumber = "102", Address = "123 avenue, Lachine, QC, CA", BuildingId = BuildingId }
+            //    }
+            //};
+
+            //if (await userManager.FindByEmailAsync(admin.Email) == null)
+            //{
+            //    await userManager.CreateAsync(admin, "Password123!");
+            //    await userManager.AddToRoleAsync(admin, "Admin");
+            //}
+
+            //Console.WriteLine("Database seeding completed successfully.");
         }
     }
 
