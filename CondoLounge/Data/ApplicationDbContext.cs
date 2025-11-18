@@ -16,6 +16,23 @@ namespace CondoLounge.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Building>().
+                HasKey(b => b.BuildingId);
+
+            modelBuilder.Entity<Condo>().
+                HasKey(c => c.CondoNumber);
+
+            modelBuilder.Entity<Condo>()
+                .HasOne(c => c.Building)
+                .WithMany(b => b.Condos)
+                .HasForeignKey(c => c.BuildingId);
+
+            modelBuilder.Entity<ApplicationUser>()
+                .HasMany(u => u.Condos)
+                .WithMany(c => c.Users)
+                .UsingEntity(j => j.ToTable("UserCondos"));
+                
         }
 
         public DbSet<Condo> Condos { get; set; }
