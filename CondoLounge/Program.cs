@@ -1,6 +1,14 @@
+using CondoLounge.Data;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
-
+//
+// --- Database Configuration ---
+// Connect to SQL Server using the connection string defined inappsettings.json
+//
+builder.Services.AddDbContext<ApplicationDbContext>(opt =>
+opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
