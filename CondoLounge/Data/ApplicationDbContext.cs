@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace CondoLounge.Data
 {
@@ -16,5 +17,8 @@ namespace CondoLounge.Data
         {
             base.OnModelCreating(modelBuilder);
         }
+
+        public DbSet<Condo> Condos { get; set; }
+        public DbSet<Building> Buildings { get; set; }
     }
 }
