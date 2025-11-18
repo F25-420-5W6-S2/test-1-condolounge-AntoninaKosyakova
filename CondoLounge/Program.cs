@@ -2,6 +2,7 @@ using CondoLounge.Data;
 using CondoLounge.Data.Entities;
 using CondoLounge.Data.Interfaces;
 using CondoLounge.Data.Repositories;
+using CondoLounge.Seed;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,6 +25,15 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole<int>>(options =>
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultUI()
 .AddDefaultTokenProviders();
+
+//
+// --- Register Repositories (DI) ---
+// Register domain-specific repositories
+//
+builder.Services.AddScoped<IApplicationUserRepository,ApplicationUserRepository>();
+builder.Services.AddScoped<IBuildingRepository, BuildingRepository>();
+builder.Services.AddScoped<ICondoRepository, CondoRepository>();
+
 
 
 // Register generic repository
@@ -62,5 +72,11 @@ app.MapControllerRoute(
 
 // Razor pages (Identity UI)
 app.MapRazorPages();
+
+//
+// --- Database Seeding ---
+// Seeds roles, admin user, default guild, etc.
+//
+await DbSeeder.SeedAsync(app.Services);
 
 app.Run();
