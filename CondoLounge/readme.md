@@ -3,15 +3,19 @@
 Welcome to the CondoLounge App
 
 The CondoLounge App should be a way to manage the condo buildings.
-Usually there is at least one user that leaves in a condo.
+
+Usually there is at least one user that lives in a condo.
+
 One condo can have multiple users and the Condo-Number is mandatory and uniq id in the same building.
+
 One user may have multiple condos in multiple buildings.
+
 A condo will have: CondoNumber, location/ address. 
 
 To do:
 1. Make the application runnable. (2%) DOne?
 2. Add the Identity middleware (2%) done?
-2. Create the entities for User, Building, Condo (2%)
+2. Create the entities for User, Building, Condo (2%) Done?
 3. Create the specific repos for the entities (2%)
 4. Seed some data with an Admin user that is part of an initial <br/>
    Building, Condo and the Default and Admin roles available. (3%)
