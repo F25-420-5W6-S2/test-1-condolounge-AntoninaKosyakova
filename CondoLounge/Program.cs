@@ -1,4 +1,8 @@
 using CondoLounge.Data;
+using CondoLounge.Data.Entities;
+using CondoLounge.Data.Interfaces;
+using CondoLounge.Data.Repositories;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,8 +14,26 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ApplicationDbContext>(opt =>
 opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+
+// --- Identity Setup ---
+//
+builder.Services.AddIdentity<ApplicationUser, IdentityRole<int>>(options =>
+{
+    options.SignIn.RequireConfirmedAccount = true;
+})
+.AddEntityFrameworkStores<ApplicationDbContext>()
+.AddDefaultUI()
+.AddDefaultTokenProviders();
+
+
+// Register generic repository
+builder.Services.AddScoped(typeof(ICondoLoungeGenericRepository<>),
+                            typeof(CondoLoungeGenericGenericRepository<>));
+
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
 
 var app = builder.Build();
 
@@ -28,10 +50,17 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+// Identity middlewares
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+// Razor pages (Identity UI)
+app.MapRazorPages();
 
 app.Run();
